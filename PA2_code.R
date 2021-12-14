@@ -54,6 +54,16 @@ data60_cl <- data60_cl[order(-data60_cl$weird, data60_cl$id),]
 
 
 "#### Scale Construction ####"
+#### Construct new Scales ####
+data60_cl$X <- rowMeans(data60_cl[,c(2,3,4,5)])
+
+data60_cl$M <- rowMeans(data60_cl[,c(6,8,9,10,22)])
+
+data60_cl$Y <- rowMeans(data60_cl[,c(11,12,13,14,15)])
+
+
+"#### Weird Variables ####"
+
 dfX <- data.frame (first_column  = (data60_cl$x1),
                   second_column = (data60_cl$x2),
                   third_column = (data60_cl$x3),
@@ -108,10 +118,5 @@ round(cor(dfM2), 2)
 alpha(dfM2)
 
 
-#### Construct new Scales ####
-data60_cl$X <- rowMeans(data60_cl[,c(2,3,4,5)])
-
-data60_cl$M <- rowMeans(data60_cl[,c(6,8,9,10,22)])
-
-data60_cl$Y <- rowMeans(data60_cl[,c(11,12,13,14,15)])
+"#### Analyses ####"
 
