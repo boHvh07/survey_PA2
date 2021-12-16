@@ -2,13 +2,29 @@ library(readr)
 library(haven)
 library(dplyr) 
 library(psych)
+library(lavaan)
+library(semPlot) 
 
 
 data_60 <- read_csv("~/Downloads/data_60.csv")
 View(data_60)
 
 "###Cleaning###"
+
 summary(data_60)
+
+###Remove Unit non response ###
+data_60 <- data_60[data_60$id != 145, ]
+data_60 <- data_60[data_60$id != 188, ]
+data_60 <- data_60[data_60$id != 190, ]
+data_60 <- data_60[data_60$id != 258, ]
+data_60 <- data_60[data_60$id != 268, ]
+data_60 <- data_60[data_60$id != 299, ]
+data_60 <- data_60[data_60$id != 314, ]
+data_60 <- data_60[data_60$id != 361, ]
+data_60 <- data_60[data_60$id != 453, ]
+data_60 <- data_60[data_60$id != 549, ]
+
 
 "### Weird Variables###"
 
@@ -24,8 +40,11 @@ data60_cl <- data60_cl[data60_cl$id != 80, ]  #Duplicates cases removed
 data60_cl$weird <- 0
 data60_cl$weird[data60_cl$duplicate == 2] <- 1  #Add questionable duplicates to weird as 1
 
-#####Flatliners#####
+#####Straight liners#####
 data60_cl$sd <- apply(data60_cl[2:15], 1 , sd)
+
+data60_cl$weird[data60_cl$sd == 0] <- 2
+data60_cl <- data60_cl[order(-data60_cl$weird, data60_cl$id),]
 
 ####Outliers####
 data60_cl$x1[data60_cl$x1 > 5] <- NA
@@ -45,12 +64,12 @@ data60_cl$y5[data60_cl$y5 > 5] <- NA
 
 summary(data60_cl) #Recoded incorrect data entries 
 
-data60_cl$weird[data60_cl$id == 50] <- 2
-data60_cl$weird[data60_cl$id == 370] <- 2
-data60_cl$weird[data60_cl$id == 405] <- 2
-data60_cl$weird[data60_cl$id == 431] <- 2
-data60_cl$weird[data60_cl$id == 450] <- 2
-data60_cl$weird[data60_cl$id == 497] <- 2
+data60_cl$weird[data60_cl$id == 50] <- 3
+data60_cl$weird[data60_cl$id == 370] <- 3
+data60_cl$weird[data60_cl$id == 405] <- 3
+data60_cl$weird[data60_cl$id == 431] <- 3
+data60_cl$weird[data60_cl$id == 450] <- 3
+data60_cl$weird[data60_cl$id == 497] <- 3
 
 data60_cl <- data60_cl[order(-data60_cl$weird, data60_cl$id),]
 
@@ -96,18 +115,18 @@ data60_sk$Z_y5 <- scale(data60_sk$y5, center=TRUE, scale=TRUE)
 
 data60_sk$Z_v16 <- scale(data60_sk$v16, center=TRUE, scale=TRUE)
 data60_sk$Z_v17 <- scale(data60_sk$v17, center=TRUE, scale=TRUE)
+\\\\
+summary(data60_sk) ### V17 normaal verdeeld? mean is 0.0000
 
-summary(data60_sk)
+data60_sk$v17L <- log(data60_sk$v17)
 
-data60_sk$v17 <- log(data60_sk$v17)
-
-skew_v17 <- round(skew(data60_sk$v17),2)
-data60_sk$Z_v17 <- scale(data60_sk$v17, center=TRUE, scale=TRUE)
+skew_v17L <- round(skew(data60_sk$v17L),2)
+data60_sk$Z_v17L <- scale(data60_sk$v17, center=TRUE, scale=TRUE)
 
 summary(data60_sk)
 
 data60_cl$v17L <- data60_sk$v17
-
+\\\\\
 
 "#### Scale Construction ####"
 #### Construct new Scales ####
@@ -175,4 +194,50 @@ alpha(dfM2)
 
 
 "#### Analyses ####"
+#### Q1 & Q2 ####
+model.1 <- "           
+M ~ a*X               
+Y  ~ b*M + cp*X        
+indirect := a*b       
+direct   := cp         
+total    := a*b + cp   
+"
+mediation.1 <- sem(model.1, data = data60_cl, se = "bootstrap", bootstrap=1000)  
 
+summary(mediation.1, ci=T, standardized=T, rsquare=T, fit.measures=F) 
+
+"Indirect effect is 0.054"
+"Direct effect is 0.180"
+
+#### Q3 & Q4 ####
+model.2 <- "           
+M ~ a*X + d1*v15 +f1*v16             
+Y  ~ b*M + cp*X + d2*v15 +f2*v16       
+indirect := a*b       
+direct   := cp         
+total    := a*b + cp   
+"
+covariate.1 <- sem(model.2, data = data60_cl, se = "bootstrap", bootstrap=1000)  
+
+summary(covariate.1, ci=T, standardized=T, rsquare=T, fit.measures=F) 
+
+anova(mediation.1, covariate.1)
+
+#### Q5 ###
+model.3 <- "           
+M ~ a*X               
+Y  ~ b*M + cp*X 
+v17 ~ g1*M + g2*Y
+indirect := a*b       
+direct   := cp         
+total    := a*b + cp
+"
+covariate.2 <- sem(model.3, data = data60_cl, se = "bootstrap", bootstrap=1000)  
+
+summary(covariate.2, ci=T, standardized=T, rsquare=T, fit.measures=F) 
+
+
+### Weird ###
+
+
+### Omitted Var Bias ###
