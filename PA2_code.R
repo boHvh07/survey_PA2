@@ -27,10 +27,6 @@ data60_cl$weird[data60_cl$duplicate == 2] <- 1  #Add questionable duplicates to 
 #####Flatliners#####
 data60_cl$sd <- apply(data60_cl[2:15], 1 , sd)
 
-data60_cl$weird[data60_cl$sd == 0] <- 2
-
-data60_cl <- data60_cl[order(-data60_cl$weird, data60_cl$id),]
-
 ####Outliers####
 data60_cl$x1[data60_cl$x1 > 5] <- NA
 data60_cl$x2[data60_cl$x2 > 5] <- NA
@@ -49,6 +45,14 @@ data60_cl$y5[data60_cl$y5 > 5] <- NA
 
 summary(data60_cl) #Recoded incorrect data entries 
 
+data60_cl$weird[data60_cl$id == 50] <- 2
+data60_cl$weird[data60_cl$id == 370] <- 2
+data60_cl$weird[data60_cl$id == 405] <- 2
+data60_cl$weird[data60_cl$id == 431] <- 2
+data60_cl$weird[data60_cl$id == 450] <- 2
+data60_cl$weird[data60_cl$id == 497] <- 2
+
+data60_cl <- data60_cl[order(-data60_cl$weird, data60_cl$id),]
 
 ### Check Skewness ###
 skew_x1 <- round(skew(data60_cl$x1),2)  
@@ -67,6 +71,9 @@ skew_y2 <- round(skew(data60_cl$y2),2)
 skew_y3 <- round(skew(data60_cl$y3),2) 
 skew_y4 <- round(skew(data60_cl$y4),2) 
 skew_y5 <- round(skew(data60_cl$y5),2)
+
+skew_v16 <- round(skew(data60_cl$v16),2) 
+skew_v17 <- round(skew(data60_cl$v17),2)
 
 data60_sk <- data60_cl
 
@@ -87,11 +94,19 @@ data60_sk$Z_y3 <- scale(data60_sk$y3, center=TRUE, scale=TRUE)
 data60_sk$Z_y4 <- scale(data60_sk$y4, center=TRUE, scale=TRUE)
 data60_sk$Z_y5 <- scale(data60_sk$y5, center=TRUE, scale=TRUE)
 
+data60_sk$Z_v16 <- scale(data60_sk$v16, center=TRUE, scale=TRUE)
+data60_sk$Z_v17 <- scale(data60_sk$v17, center=TRUE, scale=TRUE)
+
 summary(data60_sk)
 
+data60_sk$v17 <- log(data60_sk$v17)
 
-data60_cl$weird[data60_cl$v17 >= 10] <- 3  # outliers marked as weird in V17
-data60_cl <- data60_cl[order(-data60_cl$weird, data60_cl$id),]
+skew_v17 <- round(skew(data60_sk$v17),2)
+data60_sk$Z_v17 <- scale(data60_sk$v17, center=TRUE, scale=TRUE)
+
+summary(data60_sk)
+
+data60_cl$v17L <- data60_sk$v17
 
 
 "#### Scale Construction ####"
