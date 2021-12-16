@@ -49,6 +49,47 @@ data60_cl$y5[data60_cl$y5 > 5] <- NA
 
 summary(data60_cl) #Recoded incorrect data entries 
 
+
+### Check Skewness ###
+skew_x1 <- round(skew(data60_cl$x1),2)  
+skew_x2 <- round(skew(data60_cl$x2),2) 
+skew_x3 <- round(skew(data60_cl$x3),2) 
+skew_x4 <- round(skew(data60_cl$x4),2) 
+
+skew_m1 <- round(skew(data60_cl$m1),2)  
+skew_m2 <- round(skew(data60_cl$m2),2) 
+skew_m3 <- round(skew(data60_cl$m3),2) 
+skew_m4 <- round(skew(data60_cl$m4),2) 
+skew_m5 <- round(skew(data60_cl$m5),2)
+
+skew_y1 <- round(skew(data60_cl$y1),2)  
+skew_y2 <- round(skew(data60_cl$y2),2) 
+skew_y3 <- round(skew(data60_cl$y3),2) 
+skew_y4 <- round(skew(data60_cl$y4),2) 
+skew_y5 <- round(skew(data60_cl$y5),2)
+
+data60_sk <- data60_cl
+
+data60_sk$Z_x1 <- scale(data60_sk$x1, center=TRUE, scale=TRUE)
+data60_sk$Z_x2 <- scale(data60_sk$x2, center=TRUE, scale=TRUE)
+data60_sk$Z_x3 <- scale(data60_sk$x3, center=TRUE, scale=TRUE)
+data60_sk$Z_x4 <- scale(data60_sk$x4, center=TRUE, scale=TRUE)
+
+data60_sk$Z_m1 <- scale(data60_sk$m1, center=TRUE, scale=TRUE)
+data60_sk$Z_m2 <- scale(data60_sk$m2, center=TRUE, scale=TRUE)
+data60_sk$Z_m3 <- scale(data60_sk$m3, center=TRUE, scale=TRUE)
+data60_sk$Z_m4 <- scale(data60_sk$m4, center=TRUE, scale=TRUE)
+data60_sk$Z_m5 <- scale(data60_sk$m5, center=TRUE, scale=TRUE)
+
+data60_sk$Z_y1 <- scale(data60_sk$y1, center=TRUE, scale=TRUE)
+data60_sk$Z_y2 <- scale(data60_sk$y2, center=TRUE, scale=TRUE)
+data60_sk$Z_y3 <- scale(data60_sk$y3, center=TRUE, scale=TRUE)
+data60_sk$Z_y4 <- scale(data60_sk$y4, center=TRUE, scale=TRUE)
+data60_sk$Z_y5 <- scale(data60_sk$y5, center=TRUE, scale=TRUE)
+
+summary(data60_sk)
+
+
 data60_cl$weird[data60_cl$v17 >= 10] <- 3  # outliers marked as weird in V17
 data60_cl <- data60_cl[order(-data60_cl$weird, data60_cl$id),]
 
