@@ -4,6 +4,7 @@ library(dplyr)
 library(psych)
 library(lavaan)
 library(semPlot) 
+library(texreg) 
 
 
 data_60 <- read_csv("~/Downloads/data_60.csv")
@@ -115,9 +116,10 @@ data60_sk$Z_y5 <- scale(data60_sk$y5, center=TRUE, scale=TRUE)
 
 data60_sk$Z_v16 <- scale(data60_sk$v16, center=TRUE, scale=TRUE)
 data60_sk$Z_v17 <- scale(data60_sk$v17, center=TRUE, scale=TRUE)
-\\\\
-summary(data60_sk) ### V17 normaal verdeeld? mean is 0.0000
 
+summary(data60_sk)
+
+## Log solve of v17
 data60_sk$v17L <- log(data60_sk$v17)
 
 skew_v17L <- round(skew(data60_sk$v17L),2)
@@ -125,8 +127,12 @@ data60_sk$Z_v17L <- scale(data60_sk$v17, center=TRUE, scale=TRUE)
 
 summary(data60_sk)
 
-data60_cl$v17L <- data60_sk$v17
-\\\\\
+data60_cl$v17L <- data60_sk$v17L
+
+### Log does not work fully, v17L outliers marked as weird
+data60_cl$weird[data60_cl$v17L > 3.3] <- 4
+data60_cl <- data60_cl[order(-data60_cl$weird, data60_cl$id),]
+\\\\ "Previous ones have turned into 4's "
 
 "#### Scale Construction ####"
 #### Construct new Scales ####
@@ -221,8 +227,6 @@ covariate.1 <- sem(model.2, data = data60_cl, se = "bootstrap", bootstrap=1000)
 
 summary(covariate.1, ci=T, standardized=T, rsquare=T, fit.measures=F) 
 
-anova(mediation.1, covariate.1)
-
 #### Q5 ###
 model.3 <- "           
 M ~ a*X               
@@ -238,6 +242,60 @@ summary(covariate.2, ci=T, standardized=T, rsquare=T, fit.measures=F)
 
 
 ### Weird ###
+data60_weird <- data60_cl
+data60_weird <- data60_weird[order(-data60_weird$weird, data60_weird$id),]
+
+data60_weird <- data60_weird[data60_weird$id != 22, ]
+data60_weird <- data60_weird[data60_weird$id != 112, ]
+data60_weird <- data60_weird[data60_weird$id != 217, ]
+data60_weird <- data60_weird[data60_weird$id != 244, ]
+data60_weird <- data60_weird[data60_weird$id != 336, ]
+data60_weird <- data60_weird[data60_weird$id != 345, ]
+data60_weird <- data60_weird[data60_weird$id != 425, ]
+data60_weird <- data60_weird[data60_weird$id != 619, ]
+
+data60_weird <- data60_weird[data60_weird$id != 50, ]
+data60_weird <- data60_weird[data60_weird$id != 370, ]
+data60_weird <- data60_weird[data60_weird$id != 405, ]
+data60_weird <- data60_weird[data60_weird$id != 431, ]
+data60_weird <- data60_weird[data60_weird$id != 450, ]
+data60_weird <- data60_weird[data60_weird$id != 497, ]
+
+mediation.W <- sem(model.1, data = data60_weird, se = "bootstrap", bootstrap=1000)  
+summary(mediation.W, ci=T, standardized=T, rsquare=T, fit.measures=F) 
+
+
+covariate.W <- sem(model.2, data = data60_weird, se = "bootstrap", bootstrap=1000)  
+summary(covariate.1, ci=T, standardized=T, rsquare=T, fit.measures=F) 
+
+
+covariate.W2 <- sem(model.3, data = data60_weird, se = "bootstrap", bootstrap=1000)  
+summary(covariate.2, ci=T, standardized=T, rsquare=T, fit.measures=F) 
 
 
 ### Omitted Var Bias ###
+
+screenreg(list(mediation.1, mediation.W),      # Names of the R-objects from above   
+          custom.model.name =        # Give new, descriptive names to the models
+            c("Model 1: Normal", 
+              "Model 2: Adjusted for Weird"), 
+          single.row = TRUE, digits = 3)
+
+
+
+
+screenreg(list(covariate.1, covariate.W),      # Names of the R-objects from above   
+          custom.model.name =        # Give new, descriptive names to the models
+            c("Model 1: Normal", 
+              "Model 2: Adjusted for Weird"), 
+          single.row = TRUE, digits = 3)
+
+
+
+
+screenreg(list(covariate.2, covariate.W2),      # Names of the R-objects from above   
+          custom.model.name =        # Give new, descriptive names to the models
+            c("Model 1: Normal", 
+              "Model 2: Adjusted for Weird"), 
+          single.row = TRUE, digits = 3)
+
