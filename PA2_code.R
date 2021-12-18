@@ -114,25 +114,7 @@ data60_sk$Z_y3 <- scale(data60_sk$y3, center=TRUE, scale=TRUE)
 data60_sk$Z_y4 <- scale(data60_sk$y4, center=TRUE, scale=TRUE)
 data60_sk$Z_y5 <- scale(data60_sk$y5, center=TRUE, scale=TRUE)
 
-data60_sk$Z_v16 <- scale(data60_sk$v16, center=TRUE, scale=TRUE)
-data60_sk$Z_v17 <- scale(data60_sk$v17, center=TRUE, scale=TRUE)
-
 summary(data60_sk)
-
-## Log solve of v17
-data60_sk$v17L <- log(data60_sk$v17)
-
-skew_v17L <- round(skew(data60_sk$v17L),2)
-data60_sk$Z_v17L <- scale(data60_sk$v17, center=TRUE, scale=TRUE)
-
-summary(data60_sk)
-
-data60_cl$v17L <- data60_sk$v17L
-
-### Log does not work fully, v17L outliers marked as weird
-data60_cl$weird[data60_cl$v17L > 3.3] <- 4
-data60_cl <- data60_cl[order(-data60_cl$weird, data60_cl$id),]
-\\\\ "Previous ones have turned into 4's "
 
 "#### Scale Construction ####"
 #### Construct new Scales ####
@@ -208,7 +190,7 @@ indirect := a*b
 direct   := cp         
 total    := a*b + cp   
 "
-mediation.1 <- sem(model.1, data = data60_cl, se = "bootstrap", bootstrap=1000)  
+mediation <- sem(model.1, data = data60_cl, se = "bootstrap", bootstrap=1000)  
 
 summary(mediation.1, ci=T, standardized=T, rsquare=T, fit.measures=F) 
 
@@ -223,7 +205,7 @@ indirect := a*b
 direct   := cp         
 total    := a*b + cp   
 "
-covariate.1 <- sem(model.2, data = data60_cl, se = "bootstrap", bootstrap=1000)  
+covariates <- sem(model.2, data = data60_cl, se = "bootstrap", bootstrap=1000)  
 
 summary(covariate.1, ci=T, standardized=T, rsquare=T, fit.measures=F) 
 
@@ -236,7 +218,7 @@ indirect := a*b
 direct   := cp         
 total    := a*b + cp
 "
-covariate.2 <- sem(model.3, data = data60_cl, se = "bootstrap", bootstrap=1000)  
+covariate17 <- sem(model.3, data = data60_cl, se = "bootstrap", bootstrap=1000)  
 
 summary(covariate.2, ci=T, standardized=T, rsquare=T, fit.measures=F) 
 
@@ -244,17 +226,13 @@ summary(covariate.2, ci=T, standardized=T, rsquare=T, fit.measures=F)
 ### Weird ###
 data60_weird <- data60_cl
 data60_weird3 <- data60_cl
-data60_weird4 <- data60_cl
+data60_weird1 <- data60_cl
 data60_weird <- data60_weird[order(-data60_weird$weird, data60_weird$id),]
 
 data60_weird <- data60_weird[data60_weird$id != 22, ]
-data60_weird <- data60_weird[data60_weird$id != 112, ]
 data60_weird <- data60_weird[data60_weird$id != 217, ]
-data60_weird <- data60_weird[data60_weird$id != 244, ]
-data60_weird <- data60_weird[data60_weird$id != 336, ]
 data60_weird <- data60_weird[data60_weird$id != 345, ]
 data60_weird <- data60_weird[data60_weird$id != 425, ]
-data60_weird <- data60_weird[data60_weird$id != 619, ]
 
 data60_weird <- data60_weird[data60_weird$id != 50, ]
 data60_weird <- data60_weird[data60_weird$id != 370, ]
@@ -263,37 +241,34 @@ data60_weird <- data60_weird[data60_weird$id != 431, ]
 data60_weird <- data60_weird[data60_weird$id != 450, ]
 data60_weird <- data60_weird[data60_weird$id != 497, ]
 
+data60_weird1 <- data60_weird1[data60_weird1$id != 50, ]
+data60_weird1 <- data60_weird1[data60_weird1$id != 370, ]
+data60_weird1 <- data60_weird1[data60_weird1$id != 405, ]
+data60_weird1 <- data60_weird1[data60_weird1$id != 431, ]
+data60_weird1 <- data60_weird1[data60_weird1$id != 450, ]
+data60_weird1 <- data60_weird1[data60_weird1$id != 497, ]
+
 data60_weird3 <- data60_weird3[data60_weird3$id != 22, ]
-data60_weird3 <- data60_weird3[data60_weird3$id != 112, ]
 data60_weird3 <- data60_weird3[data60_weird3$id != 217, ]
-data60_weird3 <- data60_weird3[data60_weird3$id != 244, ]
-data60_weird3 <- data60_weird3[data60_weird3$id != 336, ]
 data60_weird3 <- data60_weird3[data60_weird3$id != 345, ]
 data60_weird3 <- data60_weird3[data60_weird3$id != 425, ]
-data60_weird3 <- data60_weird3[data60_weird3$id != 619, ]
 
-data60_weird4 <- data60_weird4[data60_weird4$id != 50, ]
-data60_weird4 <- data60_weird4[data60_weird4$id != 370, ]
-data60_weird4 <- data60_weird4[data60_weird4$id != 405, ]
-data60_weird4 <- data60_weird4[data60_weird4$id != 431, ]
-data60_weird4 <- data60_weird4[data60_weird4$id != 450, ]
-data60_weird4 <- data60_weird4[data60_weird4$id != 497, ]
 
 mediation.W <- sem(model.1, data = data60_weird, se = "bootstrap", bootstrap=1000)  
 summary(mediation.W, ci=T, standardized=T, rsquare=T, fit.measures=F) 
 
 
-covariate.W <- sem(model.2, data = data60_weird, se = "bootstrap", bootstrap=1000)  
+covariates.W <- sem(model.2, data = data60_weird, se = "bootstrap", bootstrap=1000)  
 summary(covariate.1, ci=T, standardized=T, rsquare=T, fit.measures=F) 
 
 
-covariate.W2 <- sem(model.3, data = data60_weird, se = "bootstrap", bootstrap=1000)  
+covariate17.W <- sem(model.3, data = data60_weird, se = "bootstrap", bootstrap=1000)  
 summary(covariate.2, ci=T, standardized=T, rsquare=T, fit.measures=F) 
 
 
 ### Omitted Var Bias ###
 
-screenreg(list(mediation.1, mediation.W),      # Names of the R-objects from above   
+screenreg(list(mediation, mediation.W),      # Names of the R-objects from above   
           custom.model.name =        # Give new, descriptive names to the models
             c("Model 1: Normal", 
               "Model 2: Adjusted for Weird"), 
@@ -302,7 +277,7 @@ screenreg(list(mediation.1, mediation.W),      # Names of the R-objects from abo
 
 
 
-screenreg(list(covariate.1, covariate.W),      # Names of the R-objects from above   
+screenreg(list(covariates, covariates.W),      # Names of the R-objects from above   
           custom.model.name =        # Give new, descriptive names to the models
             c("Model 1: Normal", 
               "Model 2: Adjusted for Weird"), 
@@ -311,7 +286,7 @@ screenreg(list(covariate.1, covariate.W),      # Names of the R-objects from abo
 
 
 
-screenreg(list(covariate.2, covariate.W2),      # Names of the R-objects from above   
+screenreg(list(covariate17, covariate17.W),      # Names of the R-objects from above   
           custom.model.name =        # Give new, descriptive names to the models
             c("Model 1: Normal", 
               "Model 2: Adjusted for Weird"), 
@@ -319,53 +294,77 @@ screenreg(list(covariate.2, covariate.W2),      # Names of the R-objects from ab
 
 
 ### Omitted Var Bias 2 ###
-screenreg(list(mediation.1, mediation.W),      # Names of the R-objects from above   
+
+mediation.W1 <- sem(model.1, data = data60_weird1, se = "bootstrap", bootstrap=1000)  
+summary(mediation.W, ci=T, standardized=T, rsquare=T, fit.measures=F) 
+
+
+covariates.W1 <- sem(model.2, data = data60_weird1, se = "bootstrap", bootstrap=1000)  
+summary(covariate.1, ci=T, standardized=T, rsquare=T, fit.measures=F) 
+
+
+covariate17.W1 <- sem(model.3, data = data60_weird1, se = "bootstrap", bootstrap=1000)  
+summary(covariate.2, ci=T, standardized=T, rsquare=T, fit.measures=F) 
+
+
+
+screenreg(list(mediation.W, mediation.W1),      # Names of the R-objects from above   
           custom.model.name =        # Give new, descriptive names to the models
-            c("Model 1: Normal", 
-              "Model 2: Adjusted for Weird"), 
+            c("Model 1: All Weird removed", 
+              "Model 2: Flatliners removed"), 
           single.row = TRUE, digits = 3)
 
 
 
-
-screenreg(list(covariate.1, covariate.W),      # Names of the R-objects from above   
+screenreg(list(covariates.W, covariates.W1),      # Names of the R-objects from above   
           custom.model.name =        # Give new, descriptive names to the models
-            c("Model 1: Normal", 
-              "Model 2: Adjusted for Weird"), 
+            c("Model 1: All Weird removed", 
+              "Model 2: Flatliners removed"), 
           single.row = TRUE, digits = 3)
 
 
 
-
-screenreg(list(covariate.2, covariate.W2),      # Names of the R-objects from above   
+screenreg(list(covariate17.W, covariate17.W1),      # Names of the R-objects from above   
           custom.model.name =        # Give new, descriptive names to the models
-            c("Model 1: Normal", 
-              "Model 2: Adjusted for Weird"), 
+            c("Model 1: All Weird removed", 
+              "Model 2: Flatliners removed"), 
           single.row = TRUE, digits = 3)
+
 
 #################################################################
 
 
-screenreg(list(mediation.1, mediation.W),      # Names of the R-objects from above   
+mediation.W3 <- sem(model.1, data = data60_weird3, se = "bootstrap", bootstrap=1000)  
+summary(mediation.W, ci=T, standardized=T, rsquare=T, fit.measures=F) 
+
+
+covariates.W3 <- sem(model.2, data = data60_weird3, se = "bootstrap", bootstrap=1000)  
+summary(covariate.1, ci=T, standardized=T, rsquare=T, fit.measures=F) 
+
+
+covariate17.W3 <- sem(model.3, data = data60_weird3, se = "bootstrap", bootstrap=1000)  
+summary(covariate.2, ci=T, standardized=T, rsquare=T, fit.measures=F) 
+
+
+
+screenreg(list(mediation.W, mediation.W3),      # Names of the R-objects from above   
           custom.model.name =        # Give new, descriptive names to the models
-            c("Model 1: Normal", 
-              "Model 2: Adjusted for Weird"), 
+            c("Model 1: All Weird removed", 
+              "Model 2: Partly Item Non Response removed"), 
           single.row = TRUE, digits = 3)
 
 
 
-
-screenreg(list(covariate.1, covariate.W),      # Names of the R-objects from above   
+screenreg(list(covariates.W, covariates.W3),      # Names of the R-objects from above   
           custom.model.name =        # Give new, descriptive names to the models
-            c("Model 1: Normal", 
-              "Model 2: Adjusted for Weird"), 
+            c("Model 1: All Weird removed", 
+              "Model 2: Partly Item Non Response removed"), 
           single.row = TRUE, digits = 3)
 
 
 
-
-screenreg(list(covariate.2, covariate.W2),      # Names of the R-objects from above   
+screenreg(list(covariate17.W, covariate17.W3),      # Names of the R-objects from above   
           custom.model.name =        # Give new, descriptive names to the models
-            c("Model 1: Normal", 
-              "Model 2: Adjusted for Weird"), 
+            c("Model 1: All Weird removed", 
+              "Model 2: Partly Item Non Response removed"), 
           single.row = TRUE, digits = 3)
