@@ -192,10 +192,10 @@ total    := a*b + cp
 "
 mediation <- sem(model.1, data = data60_cl, se = "bootstrap", bootstrap=1000)  
 
-summary(mediation.1, ci=T, standardized=T, rsquare=T, fit.measures=F) 
+summary(mediation, ci=T, standardized=T, rsquare=T, fit.measures=F) 
 
-"Indirect effect is 0.054"
-"Direct effect is 0.180"
+"Indirect effect is 0.129"
+"Direct effect is 0.105"
 
 #### Q3 & Q4 ####
 model.2 <- "           
@@ -207,26 +207,25 @@ total    := a*b + cp
 "
 covariates <- sem(model.2, data = data60_cl, se = "bootstrap", bootstrap=1000)  
 
-summary(covariate.1, ci=T, standardized=T, rsquare=T, fit.measures=F) 
+summary(covariates, ci=T, standardized=T, rsquare=T, fit.measures=F) 
 
 #### Q5 ###
 model.3 <- "           
-M ~ a*X               
-Y  ~ b*M + cp*X 
+M ~ a*X + d1*v15 +f1*v16        
+Y  ~ b*M + cp*X + d2*v15 +f2*v16 
 v17 ~ g1*M + g2*Y
 indirect := a*b       
 direct   := cp         
 total    := a*b + cp
 "
 covariate17 <- sem(model.3, data = data60_cl, se = "bootstrap", bootstrap=1000)  
-
-summary(covariate.2, ci=T, standardized=T, rsquare=T, fit.measures=F) 
+summary(covariate17, ci=T, standardized=T, rsquare=T, fit.measures=F) 
 
 
 ### Weird ###
 data60_weird <- data60_cl
-data60_weird3 <- data60_cl
 data60_weird1 <- data60_cl
+data60_weird3 <- data60_cl
 data60_weird <- data60_weird[order(-data60_weird$weird, data60_weird$id),]
 
 data60_weird <- data60_weird[data60_weird$id != 22, ]
@@ -259,11 +258,11 @@ summary(mediation.W, ci=T, standardized=T, rsquare=T, fit.measures=F)
 
 
 covariates.W <- sem(model.2, data = data60_weird, se = "bootstrap", bootstrap=1000)  
-summary(covariate.1, ci=T, standardized=T, rsquare=T, fit.measures=F) 
+summary(covariates.W, ci=T, standardized=T, rsquare=T, fit.measures=F) 
 
 
 covariate17.W <- sem(model.3, data = data60_weird, se = "bootstrap", bootstrap=1000)  
-summary(covariate.2, ci=T, standardized=T, rsquare=T, fit.measures=F) 
+summary(covariate17.W, ci=T, standardized=T, rsquare=T, fit.measures=F) 
 
 
 ### Omitted Var Bias ###
@@ -296,15 +295,15 @@ screenreg(list(covariate17, covariate17.W),      # Names of the R-objects from a
 ### Omitted Var Bias 2 ###
 
 mediation.W1 <- sem(model.1, data = data60_weird1, se = "bootstrap", bootstrap=1000)  
-summary(mediation.W, ci=T, standardized=T, rsquare=T, fit.measures=F) 
+summary(mediation.W1, ci=T, standardized=T, rsquare=T, fit.measures=F) 
 
 
 covariates.W1 <- sem(model.2, data = data60_weird1, se = "bootstrap", bootstrap=1000)  
-summary(covariate.1, ci=T, standardized=T, rsquare=T, fit.measures=F) 
+summary(covariates.W1, ci=T, standardized=T, rsquare=T, fit.measures=F) 
 
 
 covariate17.W1 <- sem(model.3, data = data60_weird1, se = "bootstrap", bootstrap=1000)  
-summary(covariate.2, ci=T, standardized=T, rsquare=T, fit.measures=F) 
+summary(covariate17.W1, ci=T, standardized=T, rsquare=T, fit.measures=F) 
 
 
 
@@ -335,15 +334,15 @@ screenreg(list(covariate17.W, covariate17.W1),      # Names of the R-objects fro
 
 
 mediation.W3 <- sem(model.1, data = data60_weird3, se = "bootstrap", bootstrap=1000)  
-summary(mediation.W, ci=T, standardized=T, rsquare=T, fit.measures=F) 
+summary(mediation.W3, ci=T, standardized=T, rsquare=T, fit.measures=F) 
 
 
 covariates.W3 <- sem(model.2, data = data60_weird3, se = "bootstrap", bootstrap=1000)  
-summary(covariate.1, ci=T, standardized=T, rsquare=T, fit.measures=F) 
+summary(covariates.W3, ci=T, standardized=T, rsquare=T, fit.measures=F) 
 
 
 covariate17.W3 <- sem(model.3, data = data60_weird3, se = "bootstrap", bootstrap=1000)  
-summary(covariate.2, ci=T, standardized=T, rsquare=T, fit.measures=F) 
+summary(covariate17.W3, ci=T, standardized=T, rsquare=T, fit.measures=F) 
 
 
 
