@@ -27,7 +27,7 @@ data_60 <- data_60[data_60$id != 453, ]
 data_60 <- data_60[data_60$id != 549, ]
 
 
-"### Weird Variables###"
+"### Weird Cases###"
 
 #####Duplicates#####
 data60_cl <- add_count(data_60, x1, x2, x3, x4, m1, m2, m3, m4, m5, y1, y2, y3, y4, y5, 
@@ -311,7 +311,7 @@ summary(covariate17.W1, ci=T, standardized=T, rsquare=T, fit.measures=F)
 
 screenreg(list(mediation.W, mediation.W1),      # Names of the R-objects from above   
           custom.model.name =        # Give new, descriptive names to the models
-            c("Model 1: All Weird removed", 
+            c("Model 1: Adjusted for Weird", 
               "Model 2: Flatliners removed"), 
           single.row = TRUE, digits = 3)
 
@@ -319,7 +319,7 @@ screenreg(list(mediation.W, mediation.W1),      # Names of the R-objects from ab
 
 screenreg(list(covariates.W, covariates.W1),      # Names of the R-objects from above   
           custom.model.name =        # Give new, descriptive names to the models
-            c("Model 1: All Weird removed", 
+            c("Model 1: Adjusted for Weird", 
               "Model 2: Flatliners removed"), 
           single.row = TRUE, digits = 3)
 
@@ -327,7 +327,7 @@ screenreg(list(covariates.W, covariates.W1),      # Names of the R-objects from 
 
 screenreg(list(covariate17.W, covariate17.W1),      # Names of the R-objects from above   
           custom.model.name =        # Give new, descriptive names to the models
-            c("Model 1: All Weird removed", 
+            c("Model 1: Adjusted for Weird", 
               "Model 2: Flatliners removed"), 
           single.row = TRUE, digits = 3)
 
