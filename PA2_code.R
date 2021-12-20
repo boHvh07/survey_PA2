@@ -118,14 +118,6 @@ data60_sk$Z_y5 <- scale(data60_sk$y5, center=TRUE, scale=TRUE)
 
 summary(data60_sk)
 
-"#### Scale Construction ####"
-#### Construct new Scales ####
-data60_cl$X <- rowMeans(data60_cl[,c(2,3,4,5)])
-
-data60_cl$M <- rowMeans(data60_cl[,c(6,8,9,10,22)])
-
-data60_cl$Y <- rowMeans(data60_cl[,c(11,12,13,14,15)])
-
 
 "#### Weird Variables ####"
 
@@ -181,6 +173,15 @@ dfM2 <- na.exclude(dfM2)
 names(dfM2) = c("m1", "m2r", "m3", "m4", "m5")
 round(cor(dfM2), 2)
 alpha(dfM2)
+
+
+"#### Scale Construction ####"
+#### Construct new Scales ####
+data60_cl$X <- rowMeans(data60_cl[,c(2,3,4,5)])
+
+data60_cl$M <- rowMeans(data60_cl[,c(6,8,9,10,22)])
+
+data60_cl$Y <- rowMeans(data60_cl[,c(11,12,13,14,15)])
 
 
 "#### Analyses ####"
@@ -312,7 +313,7 @@ summary(covariate17.W1, ci=T, standardized=T, rsquare=T, fit.measures=F)
 screenreg(list(mediation.W, mediation.W1),      # Names of the R-objects from above   
           custom.model.name =        # Give new, descriptive names to the models
             c("Model 1: Adjusted for Weird", 
-              "Model 2: Flatliners removed"), 
+              "Model 2: Potential duplicates removed"), 
           single.row = TRUE, digits = 3)
 
 
@@ -320,7 +321,7 @@ screenreg(list(mediation.W, mediation.W1),      # Names of the R-objects from ab
 screenreg(list(covariates.W, covariates.W1),      # Names of the R-objects from above   
           custom.model.name =        # Give new, descriptive names to the models
             c("Model 1: Adjusted for Weird", 
-              "Model 2: Flatliners removed"), 
+              "Model 2: Potential duplicates removed"), 
           single.row = TRUE, digits = 3)
 
 
@@ -328,7 +329,7 @@ screenreg(list(covariates.W, covariates.W1),      # Names of the R-objects from 
 screenreg(list(covariate17.W, covariate17.W1),      # Names of the R-objects from above   
           custom.model.name =        # Give new, descriptive names to the models
             c("Model 1: Adjusted for Weird", 
-              "Model 2: Flatliners removed"), 
+              "Model 2: Potential duplicates removed"), 
           single.row = TRUE, digits = 3)
 
 
