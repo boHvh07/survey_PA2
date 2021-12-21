@@ -197,16 +197,13 @@ mediation <- sem(model.1, data = data60_cl, se = "bootstrap", bootstrap=1000)
 
 summary(mediation, ci=T, standardized=T, rsquare=T, fit.measures=F) 
 
-"Indirect effect is 0.129"
-"Direct effect is 0.105"
-
 #### Q3 & Q4 ####
 model.2 <- "           
 M ~ a*X + d1*v15 +f1*v16             
 Y  ~ b*M + cp*X + d2*v15 +f2*v16       
-indirect := a*b       
-direct   := cp         
-total    := a*b + cp   
+indirect := a*b + d1 + f1      
+direct   := cp + d2 + f2         
+total    := a*b  + d1 + f1 + cp + d2 + f2  
 "
 covariates <- sem(model.2, data = data60_cl, se = "bootstrap", bootstrap=1000)  
 
@@ -217,9 +214,9 @@ model.3 <- "
 M ~ a*X + d1*v15 +f1*v16        
 Y  ~ b*M + cp*X + d2*v15 +f2*v16 
 v17 ~ g1*M + g2*Y
-indirect := a*b       
-direct   := cp         
-total    := a*b + cp
+indirect := a*b + d1 + f1       
+direct   := cp  + d2 + f2          
+total    := a*b  + d1 + f1 + cp + d2 + f2
 "
 covariate17 <- sem(model.3, data = data60_cl, se = "bootstrap", bootstrap=1000)  
 summary(covariate17, ci=T, standardized=T, rsquare=T, fit.measures=F) 
