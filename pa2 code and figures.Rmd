@@ -19,8 +19,13 @@ library(texreg)
 
 
 data_60 <- read_csv("~/Downloads/data_60.csv")
+View(data_60)
 
-##Remove Unit non response
+"###Cleaning###"
+
+summary(data_60)
+
+###Remove Unit non response ###
 data_60 <- data_60[data_60$id != 145, ]
 data_60 <- data_60[data_60$id != 188, ]
 data_60 <- data_60[data_60$id != 190, ]
@@ -33,28 +38,27 @@ data_60 <- data_60[data_60$id != 453, ]
 data_60 <- data_60[data_60$id != 549, ]
 
 
-#Weird Cases
+"### Weird Cases###"
 
-##Duplicates
+#####Duplicates#####
 data60_cl <- add_count(data_60, x1, x2, x3, x4, m1, m2, m3, m4, m5, y1, y2, y3, y4, y5, 
-                                name = "duplicate")          
+                                name = "duplicate") # Name of count variable is "duplicate"            
 
 data60_cl<- data60_cl[order(-data60_cl$duplicate),]
 
 data60_cl <- data60_cl[data60_cl$id != 13, ]
-data60_cl <- data60_cl[data60_cl$id != 80, ]
+data60_cl <- data60_cl[data60_cl$id != 80, ]  #Duplicates cases removed
 
 data60_cl$weird <- 0
-data60_cl$weird[data60_cl$duplicate == 2] <- 1
+data60_cl$weird[data60_cl$duplicate == 2] <- 1  #Add questionable duplicates to weird as 1
 
-##Straight liners
+#####Straight liners#####
 data60_cl$sd <- apply(data60_cl[2:15], 1 , sd)
 
 data60_cl$weird[data60_cl$sd == 0] <- 2
 data60_cl <- data60_cl[order(-data60_cl$weird, data60_cl$id),]
 
-
-##Outliers
+####Outliers####
 summary(data60_cl)
 
 data60_cl$x1[data60_cl$x1 > 5] <- NA
@@ -72,8 +76,7 @@ data60_cl$y3[data60_cl$y3 > 5] <- NA
 data60_cl$y4[data60_cl$y4 > 5] <- NA
 data60_cl$y5[data60_cl$y5 > 5] <- NA
 
-summary(data60_cl) 
-
+summary(data60_cl) #Recoded incorrect data entries 
 
 data60_cl$weird[data60_cl$id == 50] <- 3
 data60_cl$weird[data60_cl$id == 370] <- 3
@@ -84,7 +87,7 @@ data60_cl$weird[data60_cl$id == 497] <- 3
 
 data60_cl <- data60_cl[order(-data60_cl$weird, data60_cl$id),]
 
-
+### Check Skewness ###
 skew_x1 <- round(skew(data60_cl$x1),2)  
 skew_x2 <- round(skew(data60_cl$x2),2) 
 skew_x3 <- round(skew(data60_cl$x3),2) 
@@ -104,7 +107,6 @@ skew_y5 <- round(skew(data60_cl$y5),2)
 
 skew_v16 <- round(skew(data60_cl$v16),2) 
 skew_v17 <- round(skew(data60_cl$v17),2)
-
 
 data60_sk <- data60_cl
 
@@ -127,7 +129,8 @@ data60_sk$Z_y5 <- scale(data60_sk$y5, center=TRUE, scale=TRUE)
 
 summary(data60_sk)
 
-#Weird Variables
+
+"#### Weird Variables ####"
 
 dfX <- data.frame (first_column  = (data60_cl$x1),
                   second_column = (data60_cl$x2),
@@ -164,7 +167,7 @@ names(dfY) = c("1y", "y2", "y3", "y4", "y5")
 round(cor(dfY), 2)               
 alpha(dfY)
 
-##Solve M2
+#### Solve M2 ####
 data60_cl$m2r[data60_cl$m2 == 1] <- 5
 data60_cl$m2r[data60_cl$m2 == 2] <- 4
 data60_cl$m2r[data60_cl$m2 == 3] <- 3
@@ -183,17 +186,17 @@ round(cor(dfM2), 2)
 alpha(dfM2)
 
 
-#Scale Construction
-##Construct new Scales
-data60_cl$X <- rowMeans(data60_cl[,c(2,3,4,5)])
+"#### Scale Construction ####"
+#### Construct new Scales ####
+data60_cl$X <- rowMeans(data60_cl[,c(2,3,4,5)], na.rm = TRUE)
 
-data60_cl$M <- rowMeans(data60_cl[,c(6,8,9,10,22)])
+data60_cl$M <- rowMeans(data60_cl[,c(6,8,9,10,22)], na.rm = TRUE)
 
-data60_cl$Y <- rowMeans(data60_cl[,c(11,12,13,14,15)])
+data60_cl$Y <- rowMeans(data60_cl[,c(11,12,13,14,15)], na.rm = TRUE)
 
 
-#Analyses
-##Q1 & Q2
+"#### Analyses ####"
+#### Q1 & Q2 ####
 model.1 <- "           
 M ~ a*X               
 Y  ~ b*M + cp*X        
@@ -202,35 +205,33 @@ direct   := cp
 total    := a*b + cp   
 "
 mediation <- sem(model.1, data = data60_cl, se = "bootstrap", bootstrap=1000)  
-
 summary(mediation, ci=T, standardized=T, rsquare=T, fit.measures=F) 
 
-##Q3 & Q4
+#### Q3 & Q4 ####
 model.2 <- "           
 M ~ a*X + d1*v15 +f1*v16             
 Y  ~ b*M + cp*X + d2*v15 +f2*v16       
-indirect := a*b + d1 + f1       
+indirect := a*b + d1 + f1      
 direct   := cp + d2 + f2         
 total    := a*b  + d1 + f1 + cp + d2 + f2  
 "
 covariates <- sem(model.2, data = data60_cl, se = "bootstrap", bootstrap=1000)  
-
 summary(covariates, ci=T, standardized=T, rsquare=T, fit.measures=F) 
 
-##Q5
+#### Q5 ###
 model.3 <- "           
 M ~ a*X + d1*v15 +f1*v16        
 Y  ~ b*M + cp*X + d2*v15 +f2*v16 
 v17 ~ g1*M + g2*Y
 indirect := a*b + d1 + f1       
-direct   := cp + d2 + f2        
+direct   := cp  + d2 + f2          
 total    := a*b  + d1 + f1 + cp + d2 + f2
 "
 covariate17 <- sem(model.3, data = data60_cl, se = "bootstrap", bootstrap=1000)  
 summary(covariate17, ci=T, standardized=T, rsquare=T, fit.measures=F) 
 
 
-#Weird
+### Weird ###
 data60_weird <- data60_cl
 data60_weird1 <- data60_cl
 data60_weird3 <- data60_cl
@@ -273,10 +274,10 @@ covariate17.W <- sem(model.3, data = data60_weird, se = "bootstrap", bootstrap=1
 summary(covariate17.W, ci=T, standardized=T, rsquare=T, fit.measures=F) 
 
 
-#Omitted Variable Bias
+### Omitted Var Bias ###
 
-screenreg(list(mediation, mediation.W),        
-          custom.model.name =        
+screenreg(list(mediation, mediation.W),      # Names of the R-objects from above   
+          custom.model.name =        # Give new, descriptive names to the models
             c("Model 1: Normal", 
               "Model 2: Adjusted for Weird"), 
           single.row = TRUE, digits = 3)
@@ -284,8 +285,8 @@ screenreg(list(mediation, mediation.W),
 
 
 
-screenreg(list(covariates, covariates.W),         
-          custom.model.name =       
+screenreg(list(covariates, covariates.W),      # Names of the R-objects from above   
+          custom.model.name =        # Give new, descriptive names to the models
             c("Model 1: Normal", 
               "Model 2: Adjusted for Weird"), 
           single.row = TRUE, digits = 3)
@@ -293,14 +294,14 @@ screenreg(list(covariates, covariates.W),
 
 
 
-screenreg(list(covariate17, covariate17.W),       
-          custom.model.name =        
+screenreg(list(covariate17, covariate17.W),      # Names of the R-objects from above   
+          custom.model.name =        # Give new, descriptive names to the models
             c("Model 1: Normal", 
               "Model 2: Adjusted for Weird"), 
           single.row = TRUE, digits = 3)
 
 
-##Omitted Var Bias 1
+### Omitted Var Bias 2 ###
 
 mediation.W1 <- sem(model.1, data = data60_weird1, se = "bootstrap", bootstrap=1000)  
 summary(mediation.W1, ci=T, standardized=T, rsquare=T, fit.measures=F) 
@@ -315,30 +316,30 @@ summary(covariate17.W1, ci=T, standardized=T, rsquare=T, fit.measures=F)
 
 
 
-screenreg(list(mediation.W, mediation.W1),         
-          custom.model.name =        
-            c("Model 1: All Weird removed", 
+screenreg(list(mediation.W, mediation.W1),      # Names of the R-objects from above   
+          custom.model.name =        # Give new, descriptive names to the models
+            c("Model 1: Adjusted for Weird", 
               "Model 2: Potential duplicates removed"), 
           single.row = TRUE, digits = 3)
 
 
 
-screenreg(list(covariates.W, covariates.W1),      
-          custom.model.name =        
-            c("Model 1: All Weird removed", 
+screenreg(list(covariates.W, covariates.W1),      # Names of the R-objects from above   
+          custom.model.name =        # Give new, descriptive names to the models
+            c("Model 1: Adjusted for Weird", 
               "Model 2: Potential duplicates removed"), 
           single.row = TRUE, digits = 3)
 
 
 
-screenreg(list(covariate17.W, covariate17.W1),         
-          custom.model.name =        
-            c("Model 1: All Weird removed", 
+screenreg(list(covariate17.W, covariate17.W1),      # Names of the R-objects from above   
+          custom.model.name =        # Give new, descriptive names to the models
+            c("Model 1: Adjusted for Weird", 
               "Model 2: Potential duplicates removed"), 
           single.row = TRUE, digits = 3)
 
 
-##Omitted Variable Bias Weird3
+#################################################################
 
 
 mediation.W3 <- sem(model.1, data = data60_weird3, se = "bootstrap", bootstrap=1000)  
@@ -354,26 +355,25 @@ summary(covariate17.W3, ci=T, standardized=T, rsquare=T, fit.measures=F)
 
 
 
-screenreg(list(mediation.W, mediation.W3),       
-          custom.model.name =       
+screenreg(list(mediation.W, mediation.W3),      # Names of the R-objects from above   
+          custom.model.name =        # Give new, descriptive names to the models
             c("Model 1: All Weird removed", 
-              "Model 2: Partly Item Non Response removed"), 
+              "Model 2: Item Non Response removed"), 
           single.row = TRUE, digits = 3)
 
 
 
-screenreg(list(covariates.W, covariates.W3),        
-          custom.model.name =        
+screenreg(list(covariates.W, covariates.W3),      # Names of the R-objects from above   
+          custom.model.name =        # Give new, descriptive names to the models
             c("Model 1: All Weird removed", 
-              "Model 2: Partly Item Non Response removed"), 
+              "Model 2: Item Non Response removed"), 
           single.row = TRUE, digits = 3)
 
 
 
-screenreg(list(covariate17.W, covariate17.W3),         
-          custom.model.name = 
+screenreg(list(covariate17.W, covariate17.W3),      # Names of the R-objects from above   
+          custom.model.name =        # Give new, descriptive names to the models
             c("Model 1: All Weird removed", 
-              "Model 2: Partly Item Non Response removed"), 
+              "Model 2: Item Non Response removed"), 
           single.row = TRUE, digits = 3)
-
 ```

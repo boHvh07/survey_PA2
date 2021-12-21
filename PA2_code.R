@@ -177,11 +177,11 @@ alpha(dfM2)
 
 "#### Scale Construction ####"
 #### Construct new Scales ####
-data60_cl$X <- rowMeans(data60_cl[,c(2,3,4,5)])
+data60_cl$X <- rowMeans(data60_cl[,c(2,3,4,5)], na.rm = TRUE)
 
-data60_cl$M <- rowMeans(data60_cl[,c(6,8,9,10,22)])
+data60_cl$M <- rowMeans(data60_cl[,c(6,8,9,10,22)], na.rm = TRUE)
 
-data60_cl$Y <- rowMeans(data60_cl[,c(11,12,13,14,15)])
+data60_cl$Y <- rowMeans(data60_cl[,c(11,12,13,14,15)], na.rm = TRUE)
 
 
 "#### Analyses ####"
@@ -194,7 +194,6 @@ direct   := cp
 total    := a*b + cp   
 "
 mediation <- sem(model.1, data = data60_cl, se = "bootstrap", bootstrap=1000)  
-
 summary(mediation, ci=T, standardized=T, rsquare=T, fit.measures=F) 
 
 #### Q3 & Q4 ####
@@ -206,7 +205,6 @@ direct   := cp + d2 + f2
 total    := a*b  + d1 + f1 + cp + d2 + f2  
 "
 covariates <- sem(model.2, data = data60_cl, se = "bootstrap", bootstrap=1000)  
-
 summary(covariates, ci=T, standardized=T, rsquare=T, fit.measures=F) 
 
 #### Q5 ###
