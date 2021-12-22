@@ -139,6 +139,7 @@ dfM <- data.frame (first_column  = (data60_cl$m1),
                    fourth_column = (data60_cl$m4),
                    fifth_column = (data60_cl$m5)
 )
+
 dfM <- na.exclude(dfM)
 names(dfM) = c("m1", "m2", "m3", "m4", "m5")
 round(cor(dfM), 2)
@@ -151,6 +152,7 @@ dfY <- data.frame (first_column  = (data60_cl$y1),
                    fourth_column = (data60_cl$y4),
                    fifth_column = (data60_cl$y5)
 )
+
 dfY <- na.exclude(dfY)
 names(dfY) = c("1y", "y2", "y3", "y4", "y5")
 round(cor(dfY), 2)               

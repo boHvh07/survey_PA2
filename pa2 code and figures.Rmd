@@ -42,15 +42,15 @@ data_60 <- data_60[data_60$id != 549, ]
 
 #####Duplicates#####
 data60_cl <- add_count(data_60, x1, x2, x3, x4, m1, m2, m3, m4, m5, y1, y2, y3, y4, y5, 
-                                name = "duplicate") # Name of count variable is "duplicate"            
+                                name = "duplicate")            
 
 data60_cl<- data60_cl[order(-data60_cl$duplicate),]
 
 data60_cl <- data60_cl[data60_cl$id != 13, ]
-data60_cl <- data60_cl[data60_cl$id != 80, ]  #Duplicates cases removed
+data60_cl <- data60_cl[data60_cl$id != 80, ]  
 
 data60_cl$weird <- 0
-data60_cl$weird[data60_cl$duplicate == 2] <- 1  #Add questionable duplicates to weird as 1
+data60_cl$weird[data60_cl$duplicate == 2] <- 1  
 
 #####Straight liners#####
 data60_cl$sd <- apply(data60_cl[2:15], 1 , sd)
@@ -76,7 +76,7 @@ data60_cl$y3[data60_cl$y3 > 5] <- NA
 data60_cl$y4[data60_cl$y4 > 5] <- NA
 data60_cl$y5[data60_cl$y5 > 5] <- NA
 
-summary(data60_cl) #Recoded incorrect data entries 
+summary(data60_cl) 
 
 data60_cl$weird[data60_cl$id == 50] <- 3
 data60_cl$weird[data60_cl$id == 370] <- 3
@@ -149,7 +149,8 @@ dfM <- data.frame (first_column  = (data60_cl$m1),
                    third_column = (data60_cl$m3),
                    fourth_column = (data60_cl$m4),
                    fifth_column = (data60_cl$m5)
-)
+                  )
+
 dfM <- na.exclude(dfM)
 names(dfM) = c("m1", "m2", "m3", "m4", "m5")
 round(cor(dfM), 2)
@@ -161,7 +162,8 @@ dfY <- data.frame (first_column  = (data60_cl$y1),
                    third_column = (data60_cl$y3),
                    fourth_column = (data60_cl$y4),
                    fifth_column = (data60_cl$y5)
-)
+                  )
+
 dfY <- na.exclude(dfY)
 names(dfY) = c("1y", "y2", "y3", "y4", "y5")
 round(cor(dfY), 2)               
@@ -179,7 +181,8 @@ dfM2 <- data.frame (first_column  = (data60_cl$m1),
                    third_column = (data60_cl$m3),
                    fourth_column = (data60_cl$m4),
                    fifth_column = (data60_cl$m5)
-)
+                  )
+
 dfM2 <- na.exclude(dfM2)
 names(dfM2) = c("m1", "m2r", "m3", "m4", "m5")
 round(cor(dfM2), 2)
@@ -276,8 +279,8 @@ summary(covariate17.W, ci=T, standardized=T, rsquare=T, fit.measures=F)
 
 ### Omitted Var Bias ###
 
-screenreg(list(mediation, mediation.W),      # Names of the R-objects from above   
-          custom.model.name =        # Give new, descriptive names to the models
+screenreg(list(mediation, mediation.W),        
+          custom.model.name =       
             c("Model 1: Normal", 
               "Model 2: Adjusted for Weird"), 
           single.row = TRUE, digits = 3)
@@ -285,8 +288,8 @@ screenreg(list(mediation, mediation.W),      # Names of the R-objects from above
 
 
 
-screenreg(list(covariates, covariates.W),      # Names of the R-objects from above   
-          custom.model.name =        # Give new, descriptive names to the models
+screenreg(list(covariates, covariates.W),        
+          custom.model.name =       
             c("Model 1: Normal", 
               "Model 2: Adjusted for Weird"), 
           single.row = TRUE, digits = 3)
@@ -294,8 +297,8 @@ screenreg(list(covariates, covariates.W),      # Names of the R-objects from abo
 
 
 
-screenreg(list(covariate17, covariate17.W),      # Names of the R-objects from above   
-          custom.model.name =        # Give new, descriptive names to the models
+screenreg(list(covariate17, covariate17.W),         
+          custom.model.name =        
             c("Model 1: Normal", 
               "Model 2: Adjusted for Weird"), 
           single.row = TRUE, digits = 3)
@@ -316,24 +319,24 @@ summary(covariate17.W1, ci=T, standardized=T, rsquare=T, fit.measures=F)
 
 
 
-screenreg(list(mediation.W, mediation.W1),      # Names of the R-objects from above   
-          custom.model.name =        # Give new, descriptive names to the models
+screenreg(list(mediation.W, mediation.W1),        
+          custom.model.name =        
             c("Model 1: Adjusted for Weird", 
               "Model 2: Potential duplicates removed"), 
           single.row = TRUE, digits = 3)
 
 
 
-screenreg(list(covariates.W, covariates.W1),      # Names of the R-objects from above   
-          custom.model.name =        # Give new, descriptive names to the models
+screenreg(list(covariates.W, covariates.W1),         
+          custom.model.name =       
             c("Model 1: Adjusted for Weird", 
               "Model 2: Potential duplicates removed"), 
           single.row = TRUE, digits = 3)
 
 
 
-screenreg(list(covariate17.W, covariate17.W1),      # Names of the R-objects from above   
-          custom.model.name =        # Give new, descriptive names to the models
+screenreg(list(covariate17.W, covariate17.W1),        
+          custom.model.name =        
             c("Model 1: Adjusted for Weird", 
               "Model 2: Potential duplicates removed"), 
           single.row = TRUE, digits = 3)
@@ -355,24 +358,24 @@ summary(covariate17.W3, ci=T, standardized=T, rsquare=T, fit.measures=F)
 
 
 
-screenreg(list(mediation.W, mediation.W3),      # Names of the R-objects from above   
-          custom.model.name =        # Give new, descriptive names to the models
+screenreg(list(mediation.W, mediation.W3),         
+          custom.model.name =        
             c("Model 1: All Weird removed", 
               "Model 2: Item Non Response removed"), 
           single.row = TRUE, digits = 3)
 
 
 
-screenreg(list(covariates.W, covariates.W3),      # Names of the R-objects from above   
-          custom.model.name =        # Give new, descriptive names to the models
+screenreg(list(covariates.W, covariates.W3),        
+          custom.model.name =        
             c("Model 1: All Weird removed", 
               "Model 2: Item Non Response removed"), 
           single.row = TRUE, digits = 3)
 
 
 
-screenreg(list(covariate17.W, covariate17.W3),      # Names of the R-objects from above   
-          custom.model.name =        # Give new, descriptive names to the models
+screenreg(list(covariate17.W, covariate17.W3),         
+          custom.model.name =        
             c("Model 1: All Weird removed", 
               "Model 2: Item Non Response removed"), 
           single.row = TRUE, digits = 3)
